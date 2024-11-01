@@ -1,21 +1,20 @@
+
 #include <curl/curl.h>
-#include <string> 
+#include <string>
 #include <iostream>
-#include <cstring> 
+#include <cstring>
 #include <memory>
-#include <string> 
 #include <fstream>
-#include <vector> 
-using namespace std;
+#include <vector>
 
 size_t writeCallback(void* content, size_t size, size_t nmemb, void* userdata){
     size_t realsize = size * nmemb;
-    string* str = static_cast<string*>(userdata);
+    std::string* str = static_cast<std::string*>(userdata);
     str->append(static_cast<char*>(content), realsize);
     return realsize;
 }
 
-bool download_page(const string& url, string& content){
+bool download_page(const std::string& url, std::string& content){
     bool result = false;
     
     CURL* curl = curl_easy_init();
@@ -37,29 +36,29 @@ bool download_page(const string& url, string& content){
             if (http_code == 200){
                 result = true;
             }else{
-                cerr << "HTTP Error: " << http_code << endl;
+                std::cerr << "HTTP Error: " << http_code << std::endl;
             }
         }else{
-            cerr << "Curl Error : " << curl_easy_strerror(res) << endl;
+            std::cerr << "Curl Error : " << curl_easy_strerror(res) << std::endl;
         }
         curl_easy_cleanup(curl);
     }
     return result;
 }
 
-vector<string> readFileLinesToArray(const string& fileName){
-    ifstream file(fileName);
-    vector<string> lines;
+std::vector<std::string> readFileLinesToArray(const std::string& fileName){
+    std::ifstream file(fileName);
+    std::vector<std::string> lines;
     
     if (!file.is_open()){
-        cerr << "Could not open the url file." << endl;
+        std::cerr << "Could not open the url file." << std::endl;
         return lines;
     }
     
-    string line;
-    while(getline(file, line)){
+    std::string line;
+    while(std::getline(file, line)){
         if(!line.empty()) {  // Skip empty lines
-            cout << line << endl;
+            std::cout << line << std::endl;
             lines.push_back(line);
         }
     }
@@ -68,30 +67,30 @@ vector<string> readFileLinesToArray(const string& fileName){
 }
 
 int main(){
-    vector<string> fileLines = readFileLinesToArray("list.txt");
+    std::vector<std::string> fileLines = readFileLinesToArray("list.txt");
     if (!fileLines.empty()){
-        cout << "URL file correctly fetched" << endl;
+        std::cout << "URL file correctly fetched" << std::endl;
     }else{
-        cerr << "Some error in opening the URL file" << endl;
+        std::cerr << "Some error in opening the URL file" << std::endl;
         return 1;
     }
     
     CURLcode global_init_result = curl_global_init(CURL_GLOBAL_ALL);
     
     if(global_init_result != CURLE_OK){
-        cerr << "Failed to initialize: " << curl_easy_strerror(global_init_result) << endl;
+        std::cerr << "Failed to initialize: " << curl_easy_strerror(global_init_result) << std::endl;
         return 1;
     }else{
-        cout << "Curl Initialized" << endl;
+        std::cout << "Curl Initialized" << std::endl;
     }
     
     for (const auto& url : fileLines){
-        cout << "Fetching url: " << url << endl;
-        string content;
+        std::cout << "Fetching url: " << url << std::endl;
+        std::string content;
         if (download_page(url, content)){
-            cout << "Download successful!" << endl;
+            std::cout << "Download successful!" << std::endl;
         }else{
-            cerr << "Failed to Download the URL" << endl;
+            std::cerr << "Failed to Download the URL" << std::endl;
         }
     }
     
