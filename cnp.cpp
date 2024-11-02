@@ -3,6 +3,7 @@
 #include <cctype>
 #include <curl/curl.h>
 #include <iostream>
+#include <regex>
 
 namespace cnp {
 
@@ -49,6 +50,25 @@ std::string download_page(const std::string &url) {
     }
     curl_easy_cleanup(curl);
   }
-  return (result ? content : "Error In Downloading Page Content, Try again!");
+  return (result ? content : "");
 }
+
+std::string html_to_text(const std::string &html) {
+  std::string result = html;
+
+  result =
+      std::regex_replace(result, std::regex("<script[^>]*>[^<]*</script>"), "");
+  result =
+      std::regex_replace(result, std::regex("<style[^>]*>[^<]*</style>"), "");
+  result = std::regex_replace(result, std::regex("<[^>]+>"), " ");
+  result = std::regex_replace(result, std::regex("\\s+"), " ");
+  result = std::regex_replace(result, std::regex("^\\s+|\\s+$"), "");
+  return result;
+}
+
+std::string get_webpage_text(const std::string &url) {
+  std::string html_code = download_page(url);
+  return html_to_text(html_code);
+}
+
 } // namespace cnp
