@@ -6,7 +6,7 @@
 #include <string>
 
 int main() {
-  std::string url = "https://www.example.com/";
+  std::string url = "https://lichess.org/";
 
   cnp::init();
 
@@ -22,6 +22,14 @@ int main() {
   for (auto s : result) {
     std::cout << s << std::endl;
   }
+
+  std::vector<std::string> elements =
+      cnp::find_elements_by_class(result_text, "site-name");
+
+  for (auto s : elements) {
+    std::cout << s << std::endl;
+  }
+
   cnp::cleanup();
 
   return 0;

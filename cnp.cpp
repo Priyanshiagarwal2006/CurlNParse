@@ -110,4 +110,35 @@ std::vector<std::string> get_tags_to_array(const std::string &html,
   return result;
 }
 
+std::vector<std::string> find_elements_by_class(const std::string &html,
+                                                const std::string &class_name) {
+  std::vector<std::string> result;
+  std::regex class_pattern("class\\s*=\\s*\"[^\"]*" + class_name + "[^\"]*\"");
+  size_t pos = 0;
+
+  while ((pos = html.find("<", pos)) != std::string::npos) {
+    size_t end_pos = html.find(">", pos);
+    if (end_pos == std::string::npos)
+      break;
+
+    std::string tag = html.substr(pos, end_pos - pos + 1);
+
+    if (std::regex_search(tag, class_pattern)) {
+      size_t elementEnd = pos;
+      std::string elementStart = tag.substr(1, tag.find(" ") - 1);
+      std::string closingTag = "</" + elementStart + ">";
+      size_t closePos = html.find(closingTag, end_pos);
+      if (closePos != std::string::npos) {
+        std::string element =
+            html.substr(pos, closePos + closingTag.length() - pos);
+        result.push_back(element);
+      }
+    }
+
+    pos = end_pos + 1;
+  }
+
+  return result;
+}
+
 } // namespace cnp
