@@ -59,6 +59,18 @@ int main() {
 
 ```
 
+### To-Do
+
+- ~~Find elements by tag name~~:W
+- Find elements by class/ID
+- Find elements by attribute values
+- Extract text content from elements
+- Navigate parent/child relationships
+- Extract links and URLs
+- Basic element manipulation
+- Support for different parsers (like libxml2)
+- CSS selector support
+- XPath-like queries
 ## License
 
 MIT LICENSE
