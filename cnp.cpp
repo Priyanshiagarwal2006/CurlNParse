@@ -4,6 +4,7 @@
 #include <curl/curl.h>
 #include <iostream>
 #include <regex>
+#include <vector>
 
 namespace cnp {
 
@@ -69,6 +70,44 @@ std::string html_to_text(const std::string &html) {
 std::string get_webpage_text(const std::string &url) {
   std::string html_code = download_page(url);
   return html_to_text(html_code);
+}
+
+std::vector<std::string> get_tags_to_array(const std::string &html,
+                                           const std::string &tag_name) {
+  std::vector<std::string> result;
+  std::string open_tag = "<" + tag_name;
+  std::string closing_tag = "</" + tag_name + ">";
+
+  size_t pos = 0;
+
+  while (pos < html.length()) {
+    // Find opening tag
+    size_t start = html.find(open_tag, pos);
+    if (start == std::string::npos)
+      break;
+
+    // find the end of opening tag
+    size_t end = html.find(">", start);
+    if (end == std::string::npos)
+      break;
+
+    bool is_self_closing = (html[end - 1] == '/') || // format: <img/>
+                           (tag_name == "img" || tag_name == "br" ||
+                            tag_name == "hr" || tag_name == "input");
+
+    if (is_self_closing) {
+      result.push_back(html.substr(start, end - start + 1));
+      pos = end + 1;
+    } else {
+      size_t close_start = html.find(closing_tag, end);
+      if (close_start == std::string::npos)
+        break;
+      size_t length = closing_tag.length() + close_start - start;
+      result.push_back(html.substr(start, length));
+      pos = close_start + closing_tag.length();
+    }
+  }
+  return result;
 }
 
 } // namespace cnp

@@ -24,32 +24,42 @@ g++ -c cnp.cpp -lcurl && g++ main.cpp cnp.o -lcurl -o cnp && ./cnp
 
 ## Function Reference
 
-| Function | Description | Parameters | Return Value | Notes |
-|----------|-------------|------------|--------------|-------|
-| `init()` | Initializes the curl library | None | `bool` - Returns true if initialization was successful | Must be called before using any other functions |
+| Function | Description | Parameters | Return Value  |
+|----------|-------------|------------|--------------|
+| `init()` | Initializes the curl library | None | `bool` - Returns true if initialization was successful |
 | `cleanup()` | Cleans up curl resources | None | `void` | Should be called when done using the library |
-| `download_page()` | Downloads HTML content from a URL | `const string& url` - The URL to download | `string` - The downloaded HTML content | Returns empty string on failure |
-| `html_to_text()` | Converts HTML to plain text | `const string& html` - HTML content to convert | `string` - Plain text version of the HTML | Removes tags, scripts, and styling |
-| `get_webpage_text()` | Downloads and converts webpage to text | `const string& url` - The URL to process | `string` - Plain text content of the webpage | Combines `download_page()` and `html_to_text()` |
-
+| `download_page()` | Downloads HTML content from a URL | `const string& url` | `string` - The downloaded HTML content |
+| `html_to_text()` | Converts HTML to plain text | `const string& html`| `string` - Plain text version of the HTML |
+| `get_webpage_text()` | Downloads and converts webpage to text | `const string& url`| `string` - Plain text content of the webpage |
+| `get_tags_to_array()` | Finds  tags & converts to array | `const string& html` && `const string& tag`| `vector` - vector containing the tag |
 ## Usage Example
 
 ```cpp
 #include "cnp.h"
+#include <cstring>
+#include <fstream>
 #include <iostream>
+#include <string>
 
 int main() {
-    std::string url = "https://www.example.com/";
-    
-    cnp::init();
-    std::string text = cnp::get_webpage_text(url);
-    std::cout << text << std::endl;
-    cnp::cleanup();
-    
-    return 0;
+  std::string url = "https://www.example.com/";
+  cnp::init();
+  std::string result_text = cnp::download_page(url);
+  std::string plain_text = cnp::html_to_text(result_text);
+  /*std::cout << cnp::get_webpage_text(url) << std::endl;*/
+  std::vector<std::string> result;
+  result = cnp::get_tags_to_array(result_text, "a");
+  std::cout << result.size() << std::endl;
+  for (auto s : result) {
+    std::cout << s << std::endl;
+  }
+  cnp::cleanup();
+  return 0;
 }
+
 ```
 
 ## License
 
 MIT LICENSE
+
