@@ -1,4 +1,5 @@
 
+
 # CurlNParse (CNP)
 
 CurlNParse is a C++ library that provides simple web page downloading and HTML parsing functionality using libcurl. It allows you to easily download web pages and convert HTML content to plain text.
@@ -34,9 +35,11 @@ g++ -c cnp.cpp -lcurl && g++ main.cpp cnp.o -lcurl -o cnp && ./cnp
 | `get_webpage_text()` | Downloads and converts webpage to text | `const string& url`| `string` - Plain text content of the webpage |
 | `get_tags_to_array()` | Finds  tags & converts to array | `const string& html` && `const string& tag`| `vector` - vector containing the tag |
 | `find_elements_by_class()` | Finds elements by a particular class name | `const string& html` && `const string& class_name`| `vector` - vector containing the elements |
+| `find_element_by_id()` | Find element by a particular id | `const string& html` && `const string& id`| `string` - string containing the element |
 ## Usage Example
 
 ```cpp
+
 
 #include "cnp.h"
 #include <cstring>
@@ -59,16 +62,20 @@ int main() {
   for (auto s : elements) {
     std::cout << s << std::endl;
   }
+  std::string e = cnp::find_element_by_id(result_text, "topnav");
+  std::cout << e << std::endl;
   cnp::cleanup();
+
   return 0;
 }
+
 ```
 
 ### To-Do
 
 - ~~Find elements by tag name~~
 - ~~Find elements by a class~~
-- Find elements by an ID
+- ~~Find element by an ID~~
 - Find elements by attribute values
 - Extract text content from elements
 - Navigate parent/child relationships
