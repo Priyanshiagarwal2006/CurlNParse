@@ -13,7 +13,7 @@ std::vector<std::string> get_tags_to_array(const std::string &html,
                                            const std::string &tag_name);
 std::vector<std::string> find_elements_by_class(const std::string &html,
                                                 const std::string &class_name);
-
+std::string find_element_by_id(const std::string &html, const std::string &id);
 bool init();
 void cleanup();
 

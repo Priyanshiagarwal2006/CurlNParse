@@ -141,4 +141,29 @@ std::vector<std::string> find_elements_by_class(const std::string &html,
   return result;
 }
 
+std::string find_element_by_id(const std::string &html, const std::string &id) {
+  std::regex id_pattern("id\\s*=\\s*\"" + id + "\"");
+  size_t pos = 0;
+
+  while ((pos = html.find("<", pos)) != std::string::npos) {
+    size_t end_pos = html.find(">", pos);
+    if (end_pos == std::string::npos)
+      break;
+
+    std::string tag = html.substr(pos, end_pos - pos + 1);
+    if (std::regex_search(tag, id_pattern)) {
+      size_t elementEnd = pos;
+      std::string elementStart = tag.substr(1, tag.find(" ") - 1);
+      std::string closingTag = "</" + elementStart + ">";
+      size_t closePos = html.find(closingTag, end_pos);
+
+      if (closePos != std::string::npos) {
+        return html.substr(pos, closePos + closingTag.length() - pos);
+      }
+    }
+    pos = end_pos + 1;
+  }
+
+  return ""; // Return empty string if element not found
+}
 } // namespace cnp

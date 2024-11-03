@@ -30,6 +30,8 @@ int main() {
     std::cout << s << std::endl;
   }
 
+  std::string e = cnp::find_element_by_id(result_text, "topnav");
+  std::cout << e << std::endl;
   cnp::cleanup();
 
   return 0;
