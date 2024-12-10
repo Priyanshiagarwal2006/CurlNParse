@@ -18,6 +18,13 @@ You can build the project using the following command:
 g++ -c cnp.cpp -lcurl && g++ main.cpp cnp.o -lcurl -o cnp && ./cnp
 ```
 
+Or by using ```make```:
+
+```bash
+make all
+make run
+```
+
 ## Project Structure
 
 - `main.cpp` - Example usage and main program entry point
@@ -36,6 +43,7 @@ g++ -c cnp.cpp -lcurl && g++ main.cpp cnp.o -lcurl -o cnp && ./cnp
 | `get_tags_to_array()` | Finds  tags & converts to array | `const string& html` && `const string& tag`| `vector` - vector containing the tag |
 | `find_elements_by_class()` | Finds elements by a particular class name | `const string& html` && `const string& class_name`| `vector` - vector containing the elements |
 | `find_element_by_id()` | Find element by a particular id | `const string& html` && `const string& id`| `string` - string containing the element |
+| `find_elements_by_attr_val()` | Find elements by an attribute with a particular value | `const string& html`, `const string& attr_name`, `const string& attr_val`| `vector` - vector containing all the elements |
 ## Usage Example
 
 ```cpp
@@ -64,6 +72,11 @@ int main() {
   }
   std::string e = cnp::find_element_by_id(result_text, "topnav");
   std::cout << e << std::endl;
+  std::vector<std::string> attr_test =
+      cnp::find_elements_by_attr_val(result_text, "target", "_blank");
+  for (auto s : attr_test) {
+    std::cout << s << std::endl;
+  }
   cnp::cleanup();
 
   return 0;
@@ -76,7 +89,7 @@ int main() {
 - ~~Find elements by tag name~~
 - ~~Find elements by a class~~
 - ~~Find element by an ID~~
-- Find elements by attribute values
+- ~~Find elements by attribute values~~
 - Extract text content from elements
 - Navigate parent/child relationships
 - Extract links and URLs
