@@ -91,9 +91,11 @@ std::vector<std::string> get_tags_to_array(const std::string &html,
     if (end == std::string::npos)
       break;
 
-    bool is_self_closing = (html[end - 1] == '/') || // format: <img/>
-                           (tag_name == "img" || tag_name == "br" ||
-                            tag_name == "hr" || tag_name == "input");
+    bool is_self_closing =
+        (html[end - 1] == '/') || // format: <img/>
+        (tag_name == "img" || tag_name == "br" || tag_name == "hr" ||
+         tag_name == "input" || tag_name == "meta" || tag_name == "link" ||
+         tag_name == "base");
 
     if (is_self_closing) {
       result.push_back(html.substr(start, end - start + 1));
@@ -166,4 +168,46 @@ std::string find_element_by_id(const std::string &html, const std::string &id) {
 
   return ""; // Return empty string if element not found
 }
+
+std::vector<std::string>
+find_elements_by_attr_val(const std::string &html, const std::string &attr_name,
+                          const std::string &attr_val) {
+  std::regex attr_pattern(attr_name + "\\s*=\\s*([\"]?)\\b" + attr_val +
+                          "\\b([\"]?)");
+  size_t pos = 0;
+
+  std::vector<std::string> res;
+
+  while ((pos = html.find("<", pos)) != std::string::npos) {
+    size_t end_pos = html.find(">", pos);
+    if (end_pos == std::string::npos)
+      break;
+
+    std::string tag = html.substr(pos, end_pos - pos + 1);
+    if (std::regex_search(tag, attr_pattern)) {
+      size_t elementEnd = pos;
+      std::string elementStart = tag.substr(1, tag.find(" ") - 1);
+
+      bool is_self_closing = (html[end_pos - 1] == '/') || // format: <img/>
+                             (elementStart == "img" || elementStart == "br" ||
+                              elementStart == "hr" || elementStart == "input" ||
+                              elementStart == "meta" ||
+                              elementStart == "link" || elementStart == "base");
+
+      if (is_self_closing) {
+        res.push_back(html.substr(pos, end_pos - pos + 1));
+      } else {
+        std::string closingTag = "</" + elementStart + ">";
+        size_t closePos = html.find(closingTag, end_pos);
+        if (closePos != std::string::npos) {
+          res.push_back(html.substr(pos, closePos + closingTag.length() - pos));
+        }
+      }
+    }
+    pos = end_pos + 1;
+  }
+
+  return res;
+}
+
 } // namespace cnp

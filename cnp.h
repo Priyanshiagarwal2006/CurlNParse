@@ -14,6 +14,9 @@ std::vector<std::string> get_tags_to_array(const std::string &html,
 std::vector<std::string> find_elements_by_class(const std::string &html,
                                                 const std::string &class_name);
 std::string find_element_by_id(const std::string &html, const std::string &id);
+std::vector<std::string> find_elements_by_attr_val(const std::string &html,
+                                                   const std::string &attr_name,
+                                                   const std::string &attr_val);
 bool init();
 void cleanup();
 

@@ -13,7 +13,7 @@ int main() {
   std::string result_text = cnp::download_page(url);
   std::string plain_text = cnp::html_to_text(result_text);
 
-  /*std::cout << cnp::get_webpage_text(url) << std::endl;*/
+  std::cout << cnp::get_webpage_text(url) << std::endl;
 
   std::vector<std::string> result;
   result = cnp::get_tags_to_array(result_text, "a");
@@ -30,8 +30,12 @@ int main() {
     std::cout << s << std::endl;
   }
 
-  std::string e = cnp::find_element_by_id(result_text, "topnav");
-  std::cout << e << std::endl;
+  std::vector<std::string> attr_test =
+      cnp::find_elements_by_attr_val(result_text, "target", "_blank");
+  for (auto s : attr_test) {
+    std::cout << s << std::endl;
+  }
+
   cnp::cleanup();
 
   return 0;
